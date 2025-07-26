@@ -215,10 +215,10 @@ def markdown_to_docx(markdown_content: str) -> str:
             para = doc.add_paragraph()
             parts = line.split('**')
             for j, part in enumerate(parts):
-                if j % 2 == 0:  # Regular text
+                if j % 2 == 0:
                     if part:
                         para.add_run(part)
-                else:  # Bold text
+                else:
                     if part:
                         run = para.add_run(part)
                         run.bold = True
