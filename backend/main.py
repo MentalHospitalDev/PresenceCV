@@ -1,10 +1,13 @@
-from typing import Union
 from fastapi import FastAPI
+from api.routes import router
+from services.resume_generator import resume_generator
 
 app = FastAPI()
+app.include_router(router)
 
 print("Hello from backend!")
+
+
+
     
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+
