@@ -19,9 +19,3 @@ def health_check():
         "status": "healthy",
         "api_configured": bool(Config.OPENROUTER_API_KEY)
     }
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
