@@ -1,65 +1,27 @@
 from fastapi import FastAPI
-from api.routes import router
-from services.resume_generator import resume_generator
 
-app = FastAPI()
-app.include_router(router)
+from api.v1.api import api_router
+from core.config import Config
 
-print("Hello from backend!")
+app = FastAPI(title="PresenceCV API")
 
-sample_user_data = {
-        "github": {
-            "name": "John Doe",
-            "login": "johndoe",
-            "email": "john.doe@example.com",
-            "bio": "Full-stack developer passionate about building scalable web applications",
-            "location": "San Francisco, CA",
-            "public_repos": 25,
-            "followers": 150,
-            "repositories": [
-                {
-                    "name": "awesome-todo-app",
-                    "description": "A modern todo application built with React and Node.js",
-                    "language": "JavaScript",
-                    "topics": ["react", "nodejs", "mongodb"]
-                },
-                {
-                    "name": "ml-price-predictor",
-                    "description": "Machine learning model for predicting house prices",
-                    "language": "Python",
-                    "topics": ["machine-learning", "python", "scikit-learn"]
-                }
-            ]
-        },
-        "twitter": {
-            "name": "John Doe",
-            "username": "johndoe_dev",
-            "bio": "Software Engineer | React Enthusiast | Coffee Lover",
-            "location": "San Francisco, CA",
-            "followers_count": 500
-        },
-        "additional_info": {
-            "skills": ["JavaScript", "Python", "React", "Node.js", "MongoDB", "Git"],
-            "experience": [
-                {
-                    "title": "Senior Software Engineer",
-                    "company": "TechCorp Inc.",
-                    "duration": "2021-Present",
-                    "description": "Lead frontend development for e-commerce platform"
-                }
-            ],
-            "education": [
-                {
-                    "degree": "B.S. Computer Science",
-                    "institution": "University of California",
-                    "year": "2019"
-                }
-            ]
-        }
+app.include_router(api_router, prefix="/api/v1")
+
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the PresenceCV API"}
+
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "api_configured": bool(Config.OPENROUTER_API_KEY)
     }
-    
-print("Generating resume from sample data")
-resume = resume_generator(sample_user_data)
 
-    
 
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
