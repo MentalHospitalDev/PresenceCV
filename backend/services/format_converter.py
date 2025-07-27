@@ -4,6 +4,12 @@ from io import BytesIO
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.lib.colors import Color
+import re
 
 def json_to_markdown(resume_data: dict) -> str:
     md_content = []
@@ -240,4 +246,127 @@ def markdown_to_docx(markdown_content: str) -> tuple[BytesIO, str]:
     doc.save(buffer)
     buffer.seek(0)
     
+    return buffer, filename
+
+def markdown_to_pdf(markdown_content: str) -> tuple[BytesIO, str]:
+    
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    content = []
+    
+    title_style = ParagraphStyle(
+        'TitleStyle',
+        parent=styles['Title'],
+        alignment=1, 
+        fontSize=18,
+        spaceAfter=12,
+        fontName='Helvetica-Bold'
+    )
+    
+    contact_style = ParagraphStyle(
+        'ContactStyle', 
+        parent=styles['Normal'],
+        alignment=1,  
+        spaceAfter=6,
+        fontSize=10
+    )
+    
+    docx_color = Color(0.31, 0.506, 0.741)
+    heading_style = ParagraphStyle(
+        'HeadingStyle',
+        parent=styles['Heading2'],
+        textColor=docx_color,
+        fontSize=14,
+        spaceAfter=2,  
+        spaceBefore=12,
+        fontName='Helvetica-Bold'
+    )
+    
+    hr_style = ParagraphStyle(
+        'HorizontalRule',
+        parent=styles['Normal'],
+        alignment=1,
+        spaceAfter=4,
+        spaceBefore=0  
+    )
+    
+    project_title_style = ParagraphStyle(
+        'ProjectTitleStyle',
+        parent=styles['Normal'],
+        fontSize=12,
+        spaceAfter=6,
+        spaceBefore=13,
+        fontName='Helvetica-Bold'
+    )
+    
+    skills_style = ParagraphStyle(
+        'SkillStyle',
+        parent=styles['Normal'],
+        fontSize=11,
+        spaceAfter=4,
+        spaceBefore=2
+    )
+    
+    lines = markdown_content.split('\n')
+    i = 0
+    
+    while i < len(lines):
+        line = lines[i].strip()
+        
+        # Handle name heading
+        if line.startswith('# '):
+            name = line[2:]
+            content.append(Paragraph(name, title_style))
+            content.append(Spacer(1, 0.1*inch))
+            
+        # Handle contact info
+        elif ('Email:' in line or 'Phone:' in line) and '|' in line:
+            content.append(Paragraph(line, contact_style))
+            
+        # Handle horizontal rules (---)
+        elif line.startswith('---'):
+            content.append(Paragraph('_' * 82, hr_style))
+            
+        # Handle headings (###, ##)
+        elif line.startswith('### '):
+            heading_text = line[4:]
+            content.append(Paragraph(heading_text, heading_style))
+            
+        elif line.startswith('## '):
+            heading_text = line[3:] 
+            content.append(Paragraph(heading_text, heading_style))
+            
+        # Handle bullet points
+        elif line.startswith('• '):
+            bullet_text = line[2:]
+            content.append(Paragraph(f"• {bullet_text}", styles['Normal']))
+            content.append(Spacer(1, 0.02*inch))
+        
+        # Handle bold text with ** ** 
+        elif '**' in line:
+            # Convert **text** to <b>text</b> for reportlab
+            formatted_line = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', line)
+            
+            if ':' in line and any(skill in line for skill in ['Languages:', 'Frameworks:', 'Tools:', 'Other:']):
+                skills_formatted = re.sub(r'\*\*(.*?):\*\*', r'<b>\1:</b>', line)
+                content.append(Paragraph(skills_formatted, skills_style))
+            else:
+                content.append(Paragraph(formatted_line, project_title_style))
+            
+        else:
+            if line:
+                content.append(Paragraph(line, styles['Normal']))
+                content.append(Spacer(1, 0.02*inch))
+        
+        i += 1
+    
+    content.append(Spacer(1, 0.1*inch))
+    
+    doc.build(content)
+    buffer.seek(0)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    uid = str(uuid.uuid4())[:8]
+    filename = f"resume_{timestamp}_{uid}.pdf"
     return buffer, filename
