@@ -62,8 +62,8 @@ async def generate_resume(profile: ProfileRequest):
         
         #generate resume 
         #toggle datascrap summarizer here
-        resume_json = resume_generator(scraped_data, use_summarizer=False)
-        
+        resume_json = resume_generator(scraped_data, use_summarizer=profile.summarize)
+        print(resume_json)
         #convert to markdown
         markdown_content = json_to_markdown(resume_json)
         
