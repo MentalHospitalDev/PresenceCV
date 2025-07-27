@@ -226,6 +226,8 @@ def data_summarizer_sys_prompt() -> str:
     - Key projects: impressive GitHub repositories with meaningful descriptions
     - Learning achievements: summarize completed courses, certifications, continuous learning
     - Problem-solving stats: extract leetcode stats
+    - Do not include stats or achievements that are underwhelming or unimpressive. For example, 
+      do not mention leetcode problem counts below 50, github followers below 200, or any other metric that does not stand out positively to a technical recruiter.
     - Professional indicators: look for patterns suggesting employment, freelance work, or professional experience
     - Education background: infer formal or informal education from courses and project complexity
     
