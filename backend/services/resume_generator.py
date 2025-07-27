@@ -134,108 +134,49 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
         return None
 
 def with_data_summarizer() -> str:
-    return """
-    you are an expert resume writer with the experts in creating cool af resumes
-    
-    pls listen to me: You must return valid JSON matching this exact structure:
-    {
-        "personal_info": {"name": "string", "email": "string", "phone": "string", "location": "string", "linkedin": "string", "github": "string", "twitter": "string", "website": "string"},
-        "summary": "string",
-        "skills": ["string1", "string2"],
-        "experience": [{"title": "string", "company": "string", "duration": "string", "description": "string"}],
-        "projects": [{"name": "string", "description": "string", "technologies_used": ["string1"]}],
-        "education": [{"degree": "string", "institution": "string", "year": "string"}],
-        "achievements": ["string1", "string2"]
-    }
-    
-    create a professional resume following these guidelines:
-    - write a professional summary that highlights key strengths
-    - transform project data into impressive project descriptions
-    - use problem-solving stats to demonstrate analytical capabilities
-    - create profesional experience if there's any
-    - fill missing information with "[USER INPUT REQUIRED]" placeholders
-    
-    RETURN ONLY VALID JSON STRUCTURE, NO MARKDOWN, NO FORMATTING pls pls pls
-    """
+    return """expert resume writer. create professional resume from summarized data.
+    Required JSON structure: personal_info{name,email,phone,location,linkedin,github,twitter,website}, summary(string), skills(array), experience(array with title,company,duration,description), projects(array with name,description,technologies_used), education(array with degree,institution,year), achievements(array).
+    guidelines:
+    - professional summary highlighting key strengths
+    - transform projects into impressive descriptions
+    - use stats to show analytical capabilities
+    - add professional experience if any
+    - fill missing info with "[USER INPUT REQUIRED]"
+    - skip underwhelming stats
+
+    return valid JSON only, no markdown."""
 
 def without_data_summarizer() -> str:
-    return """
-    You are a professional AI resume writer. Based on the provided scraped user data from GitHub, boot.dev, and leetcode, create a cool af resume.
-    
-    pls listen to me: You must return valid JSON matching this exact structure:
-    {
-        "personal_info": {"name": "string", "email": "string", "phone": "string", "location": "string", "linkedin": "string", "github": "string", "twitter": "string", "website": "string"},
-        "summary": "string",
-        "skills": ["string1", "string2"],
-        "experience": [{"title": "string", "company": "string", "duration": "string", "description": "string"}],
-        "projects": [{"name": "string", "description": "string", "technologies_used": ["string1"]}],
-        "education": [{"degree": "string", "institution": "string", "year": "string"}],
-        "achievements": ["string1", "string2"]
-    }
-    
-    important instructions:
-    - extract information from the scraped data
-    - create a professional summary that highlights skills and maybe experience
-    - infer projects from github with meaningful descriptions
-    - use boot.dev courses to highlight learning journey
-    - add leetcode achievements to showcase problem-solving skill
-    - generate profesional entries, if the user has any
-    - fill missing information with "[USER INPUT REQUIRED]" placeholders
-    - make reasonable professional inferences from the available data
-    - highlight learning journey
-    - forcus on impressive and relevant info
-    
-    RETURN ONLY VALID JSON STRUCTURE, NO MARKDOWN, NO FORMATTING pls pls pls
-    """
+    return """expert resume writer. create professional resume from GitHub, LeetCode, Boot.dev data.
+    Required JSON structure: personal_info{name,email,phone,location,linkedin,github,twitter,website}, summary(string), skills(array), experience(array with title,company,duration,description), projects(array with name,description,technologies_used), education(array with degree,institution,year), achievements(array).
+    Extract:
+    - professional summary highlighting skills/experience
+    - gitHub projects with meaningful descriptions
+    - boot.dev courses for learning journey
+    - leetCode achievements for problem-solving
+    - professional experience if any
+    - fill missing info with "[USER INPUT REQUIRED]"
+    - focus on impressive, relevant info only
+    - skip underwhelming stats (e.g. <50 LeetCode problems)
+
+    return valid JSON only, no markdown."""
     
 def data_summarizer_sys_prompt() -> str:
-    return """
-    you are an expert data analyst in extracting and summarizing information.
-    
-    pls listen to me: You must return valid JSON matching this exact structure:
-{
-  "personal_info": {
-    "name": "string",
-    "location": "string", 
-    "github_url": "string",
-    "leetcode_url": "string"
-  },
-  "technical_skills": ["skill1", "skill2"],
-  "key_projects": [
-    {
-      "name": "string",
-      "description": "string",
-      "technologies": "string"
-    }
-  ],
-  "learning_achievements": ["achievement1", "achievement2"],
-  "problem_solving_stats": {
-    "total_problems": 0,
-    "difficulty_breakdown": "string",
-    "languages": ["lang1", "lang2"]
-  },
-  "professional_experience_indicators": ["indicator1", "indicator2"],
-  "education_background": ["education1", "education2"]
-}
-    
-    your task is to analyzed scrapped data from github, leetcode, boot.dev that highlights:
-    - Personal info: extract name, location, contact details, and professional links
-    - Technical skills: programming languages, frameworks, tools
-    - Key projects: impressive GitHub repositories with meaningful descriptions
-    - Learning achievements: summarize completed courses, certifications, continuous learning
-    - Problem-solving stats: extract leetcode stats
-    - Do not include stats or achievements that are underwhelming or unimpressive. For example, 
-      do not mention leetcode problem counts below 50, github followers below 200, or any other metric that does not stand out positively to a technical recruiter.
-    - Professional indicators: look for patterns suggesting employment, freelance work, or professional experience
-    - Education background: infer formal or informal education from courses and project complexity
-    
-    quality guidelines:
-    - prioritize active projects and if applicable recent ones
-    - highlight consistent learning patterns
-    - extract quantifiable achievements
-    - identify professional work patterns
-    - only focus on career-relevant information
-    
-    RETURN ONLY VALID JSON STRUCTURE, NO MARKDOWN, NO FORMATTING pls pls pls
-    """
+    return """expert data analyst. extract and summarize GitHub, LeetCode, Boot.dev data. 
+
+    extract:
+    - personal info (name, location, URLs)
+    - technical skills (languages, frameworks, tools)
+    - key impressive projects with descriptions
+    - learning achievements (courses, certifications)
+    - problem-solving stats (only if >50 problems)
+    - professional experience indicators
+    - education background
+
+    Qrules:
+    - skip underwhelming stats (<50 LeetCode, <200 followers)
+    - prioritize recent/active projects
+    - focus on career-relevant info only
+
+    Return valid JSON only."""
 
