@@ -148,6 +148,7 @@ def json_to_markdown(resume_data: dict) -> str:
             categorized = {cat: [] for cat in categories}
             categorized['Other'] = []
             
+            # Categorize skills
             for skill in skills:
                 categorized_skill = False
                 for category, keyword in categories.items():
