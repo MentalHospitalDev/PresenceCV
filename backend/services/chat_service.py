@@ -6,7 +6,7 @@ from models.chat import ChatRequest, ChatResponse
 
 
 # https://openrouter.ai/docs/quickstart#using-the-openrouter-api-directly
-async def fetch_chat_response(request: ChatRequest) -> ChatResponse:
+async def fetch_chat_response(request: ChatRequest) -> ChatResponse | HTTPException: 
     if not Config.OPENROUTER_API_KEY:
         raise HTTPException(status_code=500, detail="OpenRouter API key not configured")
 
