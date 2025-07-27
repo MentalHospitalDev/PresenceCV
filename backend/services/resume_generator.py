@@ -137,27 +137,31 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
 def with_data_summarizer() -> str:
     return """expert resume writer. create professional resume from summarized data.
     JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
-    guidelines:
+    
+    create a professional resume following these guidelines:
     - professional summary highlighting key strengths using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
-    - transform projects into impressive descriptions
-    - use stats to show analytical capabilities
-    - add professional experience if any
-    - fill missing info with "[USER INPUT REQUIRED]"
-    - skip underwhelming stats
+    - transform project data into impressive project descriptions
+    - use problem-solving stats to demonstrate analytical capabilities
+    - create profesional experience if there's any
+    - fill missing information with "[USER INPUT REQUIRED]" placeholders
 
     return valid JSON only, no markdown."""
 
 def without_data_summarizer() -> str:
     return """expert resume writer. create professional resume from GitHub, LeetCode, Boot.dev data.
     Required JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
-    Extract:
-    - professional summary highlighting skills/experience using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
-    - gitHub projects with meaningful descriptions
-    - boot.dev courses for learning journey
-    - leetCode achievements for problem-solving
-    - professional experience if any
-    - fill missing info with "[USER INPUT REQUIRED]"
-    - focus on impressive, relevant info only
+    
+    important instructions:
+    - extract information from the scraped data
+    - create a professional summary that highlights skills and maybe experience
+    - infer projects from github with meaningful descriptions
+    - use boot.dev courses to highlight learning journey
+    - add leetcode achievements to showcase problem-solving skill
+    - generate profesional entries, if the user has any
+    - fill missing information with "[USER INPUT REQUIRED]" placeholders
+    - make reasonable professional inferences from the available data
+    - highlight learning journey
+    - forcus on impressive and relevant info
     - skip underwhelming stats (e.g. <50 LeetCode problems)
 
     return valid JSON only, no markdown."""
@@ -165,19 +169,23 @@ def without_data_summarizer() -> str:
 def data_summarizer_sys_prompt() -> str:
     return """expert data analyst. extract and summarize GitHub, LeetCode, Boot.dev data. 
 
-    extract:
-    - personal info (name, location, URLs)
-    - technical skills (languages, frameworks, tools)
-    - key impressive projects with descriptions
-    - learning achievements (courses, certifications)
-    - problem-solving stats (only if >50 problems)
-    - professional experience indicators
-    - education background
-
-    Qrules:
-    - skip underwhelming stats (<50 LeetCode, <200 followers)
-    - prioritize recent/active projects
-    - focus on career-relevant info only
+    your task is to analyzed scrapped data from github, leetcode, boot.dev that highlights:
+    - Personal info: extract name, location, contact details, and professional links
+    - Technical skills: programming languages, frameworks, tools
+    - Key projects: impressive GitHub repositories with meaningful descriptions
+    - Learning achievements: summarize completed courses, certifications, continuous learning
+    - Problem-solving stats: extract leetcode stats
+    - Do not include stats or achievements that are underwhelming or unimpressive. For example, 
+      do not mention leetcode problem counts below 50, github followers below 200, or any other metric that does not stand out positively to a technical recruiter.
+    - Professional indicators: look for patterns suggesting employment, freelance work, or professional experience
+    - Education background: infer formal or informal education from courses and project complexity
+    
+    quality guidelines:
+    - prioritize active projects and if applicable recent ones
+    - highlight consistent learning patterns
+    - extract quantifiable achievements
+    - identify professional work patterns
+    - only focus on career-relevant information
 
     Return valid JSON only."""
 
