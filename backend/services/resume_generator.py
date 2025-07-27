@@ -135,7 +135,7 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
         return None
 
 def with_data_summarizer() -> str:
-    return """expert resume writer. create professional resume from summarized data.
+    return """you are an expert resume writer with the experts in creating cool af resumes
     JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
     
     create a professional resume following these guidelines:
@@ -144,15 +144,16 @@ def with_data_summarizer() -> str:
     - use problem-solving stats to demonstrate analytical capabilities
     - create profesional experience if there's any
     - fill missing information with "[USER INPUT REQUIRED]" placeholders
+    - Analyze README files in repositories for additional personal info, education details, work experience, and project descriptions
 
     return valid JSON only, no markdown."""
 
 def without_data_summarizer() -> str:
-    return """expert resume writer. create professional resume from GitHub, LeetCode, Boot.dev data.
+    return """You are a professional AI resume writer. Based on the provided scraped user data from GitHub, boot.dev, and leetcode, create a cool af resume.
     Required JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
     
-    important instructions:
-    - extract information from the scraped data
+    IMPORTANT INSTRUCTIONS:
+    - extract information from the scraped data, including GitHub repository README files for additional context
     - create a professional summary that highlights skills and maybe experience
     - infer projects from github with meaningful descriptions
     - use boot.dev courses to highlight learning journey
@@ -161,13 +162,14 @@ def without_data_summarizer() -> str:
     - fill missing information with "[USER INPUT REQUIRED]" placeholders
     - make reasonable professional inferences from the available data
     - highlight learning journey
-    - forcus on impressive and relevant info
+    - focus on impressive and relevant info
     - skip underwhelming stats (e.g. <50 LeetCode problems)
+    - Analyze README files in repositories for additional personal info, education details, work experience, and project descriptions
 
     return valid JSON only, no markdown."""
     
 def data_summarizer_sys_prompt() -> str:
-    return """expert data analyst. extract and summarize GitHub, LeetCode, Boot.dev data. 
+    return """you are an expert data analyst in extracting and summarizing information.
 
     your task is to analyzed scrapped data from github, leetcode, boot.dev that highlights:
     - Personal info: extract name, location, contact details, and professional links
@@ -179,13 +181,14 @@ def data_summarizer_sys_prompt() -> str:
       do not mention leetcode problem counts below 50, github followers below 200, or any other metric that does not stand out positively to a technical recruiter.
     - Professional indicators: look for patterns suggesting employment, freelance work, or professional experience
     - Education background: infer formal or informal education from courses and project complexity
+    - Analyze README files in repositories for additional personal info, education details, work experience, and project descriptions
     
-    quality guidelines:
+    QUALITY GUIDELINES:
     - prioritize active projects and if applicable recent ones
     - highlight consistent learning patterns
     - extract quantifiable achievements
     - identify professional work patterns
-    - only focus on career-relevant information
+    - focus on career-relevant information
 
     Return valid JSON only."""
 
