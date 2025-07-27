@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from api.v1.api import api_router
-from core.config import Config
+from core.config import Settings
 
 app = FastAPI(title="PresenceCV API")
 
@@ -16,5 +16,5 @@ def read_root():
 def health_check():
     return {
         "status": "healthy",
-        "api_configured": bool(Config.OPENROUTER_API_KEY)
+        "api_configured": bool(Settings().OPENROUTER_API_KEY)
     }

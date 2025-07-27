@@ -1,17 +1,17 @@
 ﻿import httpx
 from fastapi import HTTPException
 
-from core.config import Config
+from core.config import Settings
 from models.chat import ChatRequest, ChatResponse
 
 
 # https://openrouter.ai/docs/quickstart#using-the-openrouter-api-directly
 async def fetch_chat_response(request: ChatRequest) -> ChatResponse | HTTPException: 
-    if not Config.OPENROUTER_API_KEY:
+    if not Settings().OPENROUTER_API_KEY:
         raise HTTPException(status_code=500, detail="OpenRouter API key not configured")
 
     headers = {
-        "Authorization": f"Bearer {Config.OPENROUTER_API_KEY}",
+        "Authorization": f"Bearer {Settings().OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
         # "HTTP-Referer": "<YOUR_SITE_URL>",  # Optional. Site URL for rankings on openrouter.ai.
         "X-Title": "PresenceCV",
@@ -31,7 +31,7 @@ async def fetch_chat_response(request: ChatRequest) -> ChatResponse | HTTPExcept
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(
-                f"{Config.OPENROUTER_BASE_URL}/chat/completions",
+                f"{Settings().OPENROUTER_BASE_URL}/chat/completions",
                 json=payload,
                 headers=headers,
                 timeout=30.0
