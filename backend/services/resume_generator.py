@@ -1,4 +1,3 @@
-import os
 import json
 from litellm import completion
 from pydantic import BaseModel
@@ -6,7 +5,7 @@ from dotenv import load_dotenv
 from typing import Optional, Union
 
 from uvicorn import Config
-from backend.models.resume import Form
+from models.resume import Form
 from models.Github import GithubProfile, Repository
 from models.leetcode import LeetCodeProfile
 from models.bootdev import BootDevProfile

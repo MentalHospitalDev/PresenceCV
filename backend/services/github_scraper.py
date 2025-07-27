@@ -1,7 +1,6 @@
 from models.Github import GithubProfile, Repository
 
 import httpx
-import asyncio
 
 
 class GithubScraper:

@@ -1,6 +1,5 @@
 from models.leetcode import LeetCodeProfile
 import httpx
-import asyncio
 
 
 class LeetCodeScraper:

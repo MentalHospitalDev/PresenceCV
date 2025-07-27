@@ -174,7 +174,6 @@ def json_to_markdown(resume_data: dict) -> str:
 
 
 def markdown_to_docx(markdown_content: str) -> tuple[BytesIO, str]:
-    """Convert markdown to DOCX and return as BytesIO buffer with filename"""
 
     doc = Document()
     lines = markdown_content.split("\n")

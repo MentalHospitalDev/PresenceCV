@@ -1,6 +1,4 @@
-import asyncio
 from models.bootdev import BootDevProfile, Course
-from bs4 import BeautifulSoup
 import httpx 
 
 

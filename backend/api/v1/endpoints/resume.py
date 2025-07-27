@@ -1,6 +1,6 @@
 import io
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from services.format_converter import markdown_to_docx, json_to_markdown
 from services.resume_generator import resume_generator, ScrapedData
 from services.github_scraper import GithubScraper
