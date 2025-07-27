@@ -10,6 +10,7 @@ dependencies = [
     "instructor>=1.10.0",
     "litellm>=1.74.8",
     "markdown>=3.8.2",
+    "pydantic-settings>=2.10.1",
     "python-docx>=1.2.0",
     "python-dotenv>=1.1.1",
 ]

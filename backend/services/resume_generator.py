@@ -4,9 +4,12 @@ from litellm import completion
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from typing import Optional, Union
+
+from uvicorn import Config
 from models.Github import GithubProfile, Repository
 from models.leetcode import LeetCodeProfile
 from models.bootdev import BootDevProfile
+from core.config import Settings
 
 class PersonalInfo(BaseModel):
     name: str = ""
@@ -68,8 +71,10 @@ def data_summarizer(scraped_data: ScrapedData):
     """
 
     try:
+        print("Summarizing data for resume generation...")
+        print("config ", Settings().OPENROUTER_MODEL)
         response = completion(
-            model="openrouter/google/gemini-2.5-flash",
+            model=f"openrouter/{Settings().OPENROUTER_MODEL}",
             messages=[
                 {"role": "system", "content": system_instruction},
                 {"role": "user", "content": user_content}
@@ -106,8 +111,10 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
     """
 
     try:
+        print("Generating resume...")
+        print("config ", Settings().OPENROUTER_MODEL)
         response = completion(
-            model=f"openrouter/google/gemini-2.5-pro",
+            model=f"openrouter/{Settings().OPENROUTER_MODEL}",
             messages=[
                 {"role": "system", "content": system_instruction},
                 {"role": "user", "content": user_content}
