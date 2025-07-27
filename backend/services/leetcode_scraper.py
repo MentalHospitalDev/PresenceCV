@@ -86,4 +86,3 @@ class LeetCodeScraper:
 
 
 
-asyncio.run(LeetCodeScraper("weismannS").fetch_profile())
