@@ -136,9 +136,9 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
 
 def with_data_summarizer() -> str:
     return """expert resume writer. create professional resume from summarized data.
-    Required JSON structure: personal_info{name,email,phone,location,linkedin,github,twitter,website}, summary(string), skills(array), experience(array with title,company,duration,description), projects(array with name,description,technologies_used), education(array with degree,institution,year), achievements(array).
+    JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[]}
     guidelines:
-    - professional summary highlighting key strengths
+    - professional summary highlighting key strengths using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
     - transform projects into impressive descriptions
     - use stats to show analytical capabilities
     - add professional experience if any
@@ -149,9 +149,9 @@ def with_data_summarizer() -> str:
 
 def without_data_summarizer() -> str:
     return """expert resume writer. create professional resume from GitHub, LeetCode, Boot.dev data.
-    Required JSON structure: personal_info{name,email,phone,location,linkedin,github,twitter,website}, summary(string), skills(array), experience(array with title,company,duration,description), projects(array with name,description,technologies_used), education(array with degree,institution,year), achievements(array).
+    Required JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[]}
     Extract:
-    - professional summary highlighting skills/experience
+    - professional summary highlighting skills/experience using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
     - gitHub projects with meaningful descriptions
     - boot.dev courses for learning journey
     - leetCode achievements for problem-solving
