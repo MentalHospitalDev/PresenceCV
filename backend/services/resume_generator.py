@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from typing import Optional, Union
 
 from uvicorn import Config
+from backend.models.resume import Form
 from models.Github import GithubProfile, Repository
 from models.leetcode import LeetCodeProfile
 from models.bootdev import BootDevProfile
@@ -51,6 +52,7 @@ class ScrapedData(BaseModel):
     github_repositories: Optional[list[Repository]] = None
     leetcode_profile: Optional[LeetCodeProfile] = None
     bootdev_profile: Optional[BootDevProfile] = None
+    personal_info: Optional[Form] = None
 
 class SummarizedData(BaseModel):
     personal_info: dict = {}

@@ -58,7 +58,8 @@ async def generate_resume(profile: ProfileRequest):
             github_profile= github_profile,
             github_repositories=github_repo,
             bootdev_profile=bootdev_profile,
-            leetcode_profile=leetcode_profile
+            leetcode_profile=leetcode_profile,
+            personal_info= profile.personal
         )
         
         #generate resume
