@@ -13,8 +13,6 @@ import uuid
 
 router = APIRouter()
 
-resume_store = {}
-MAX_RESUMES = 50
         
 @router.post("/generate")
 async def generate_resume(profile: ProfileRequest):
@@ -81,13 +79,3 @@ async def generate_resume(profile: ProfileRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-def cleanup():
-    if len(resume_store) > MAX_RESUMES:
-        oldest = sorted(resume_store.items(), key=lambda x: x[1]["created_at"])
-        for resume_id, data in oldest:
-            try:
-                os.remove(data["docx_filename"])
-                del resume_store[resume_id]
-            except:
-                pass

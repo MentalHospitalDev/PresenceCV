@@ -1,4 +1,5 @@
-﻿from pydantic import BaseModel
+﻿from typing_extensions import Literal
+from pydantic import BaseModel
 from typing import Optional
 
 class Form(BaseModel):
@@ -18,3 +19,4 @@ class ProfileRequest(BaseModel):
     bootdev_user: Optional[str] = None
     summarize: Optional[bool] = False
     personal: Optional[Form] = None
+    format : Optional[Literal["docx", "pdf"]] = "docx"

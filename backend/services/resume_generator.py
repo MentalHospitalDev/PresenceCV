@@ -1,6 +1,6 @@
 import json
 from litellm import completion
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from dotenv import load_dotenv
 from typing import Optional, Union
 
@@ -10,6 +10,7 @@ from models.Github import GithubProfile, Repository
 from models.leetcode import LeetCodeProfile
 from models.bootdev import BootDevProfile
 from core.config import Settings
+import time
 
 class PersonalInfo(BaseModel):
     name: str = ""
@@ -110,7 +111,8 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
     Create a professional resume using this data:
     {json.dumps(input_data, indent=2)}
     """
-
+    MAX_RETRIES = 3
+    RETRY_DELAY = 1  # seconds
     try:
         print("Generating resume...")
         print("config ", Settings().OPENROUTER_MODEL)
@@ -122,14 +124,35 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
             ],
             response_format={"type": "json_object"}
         )
-        
-        #parse json
+
         resume_json = json.loads(response.choices[0].message.content)
-        #validate
-        resume_model = Resume(**resume_json)
-        #return as dict
-        return resume_model.model_dump()
-        
+        for attempt in range(MAX_RETRIES):
+            try:
+                resume_model = Resume(**resume_json)
+                return resume_model.model_dump()
+            except ValidationError as ve:
+                print(f"Validation error on attempt {attempt+1}: {ve}")
+                if attempt < MAX_RETRIES - 1:
+                    print("Retrying resume generation...")
+                    error_message = f"ValidationError: {ve.errors()}"
+                    retry_user_content = (
+                        user_content +
+                        f"\n\nThe previous response could not be parsed due to the following validation errors:\n{error_message}\n"
+                        "Please fix these issues and return valid JSON matching the required schema."
+                    )
+                    time.sleep(RETRY_DELAY)
+                    response = completion(
+                        model=f"openrouter/{Settings().OPENROUTER_MODEL}",
+                        messages=[
+                            {"role": "system", "content": system_instruction},
+                            {"role": "user", "content": retry_user_content}
+                        ],
+                        response_format={"type": "json_object"}
+                    )
+                    resume_json = json.loads(response.choices[0].message.content)
+                else:
+                    print("Max retries reached. Returning None.")
+                    return None
     except Exception as e:
         print(f"Error generating resume: {e}")
         return None
