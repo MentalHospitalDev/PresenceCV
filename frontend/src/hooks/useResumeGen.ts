@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { validateProfiles, extractUsername, downloadFile } from "@/utils/validation";
+import { SocialProfiles, PersonalProfile } from "@/types/user";
 import { ApiError, apiService } from "@/services/api";
-import { SocialProfiles } from "@/types/user";
 
 interface UseResumeGenRet {
     isLoading: boolean;
@@ -28,11 +28,24 @@ export const useResumeGen = (): UseResumeGenRet => {
                 throw new Error(firstError);
             }
 
+            let personalInfo = null;
+            if (profiles.personal_profile) {
+                const filteredPersonal = Object.fromEntries(
+                    Object.entries(profiles.personal_profile).filter(([_, value]) => value?.trim()),
+                );
+
+                if (Object.keys(filteredPersonal).length > 0) {
+                    personalInfo = filteredPersonal;
+                }
+            }
+
             const requestData = {
                 github_user: extractUsername(profiles.github_user!, "github"),
                 leetcode_user: profiles.leetcode_user ? extractUsername(profiles.leetcode_user, "leetcode") : undefined,
                 bootdev_user: profiles.bootdev_user ? extractUsername(profiles.bootdev_user, "bootdev") : undefined,
                 summarize: false,
+                personal: personalInfo,
+                format: profiles.format || "docx",
             };
 
             const cleanedData = Object.fromEntries(

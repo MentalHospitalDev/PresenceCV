@@ -16,6 +16,7 @@ export interface ResumeGenReq {
     bootdev_user?: string;
     summarize?: boolean;
     personal?: PersonalInfo;
+    format?: "docx" | "pdf";
 }
 
 export interface ResumeGenRsp {

@@ -60,7 +60,7 @@ class ApiService {
             throw new ApiError(errorMessage, "API_ERROR", response.status);
         }
 
-        return {blob : await response.blob(), filename: "generated_resume.docx"};
+        return { blob: await response.blob(), filename: "generated_resume.docx" };
     }
 }
 
