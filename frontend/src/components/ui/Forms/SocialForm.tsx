@@ -19,6 +19,7 @@ import Image from "next/image";
 import { useResumeGen } from "@/hooks/useResumeGen";
 import { SocialProfiles, PersonalProfile } from "@/types/user";
 import { TwitterX } from "@/components/icons/icons";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 interface FormData {
     github: string;
@@ -51,10 +52,6 @@ export default function SocialForm() {
     const { isLoading, error, success, generateResume, resetState } = useResumeGen();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (error || success) {
-            resetState();
-        }
-
         const { name, value } = e.target;
 
         if (name.startsWith("personal.")) {
@@ -71,6 +68,12 @@ export default function SocialForm() {
                 ...prev,
                 [name]: value,
             }));
+        }
+    };
+
+    const handleFormFocus = () => {
+        if (error || success) {
+            resetState();
         }
     };
 
@@ -100,7 +103,7 @@ export default function SocialForm() {
 
             {success && (
                 <div className="mb-6 p-4 bg-green-900/30 border border-green-700/50 rounded-xl">
-                    <div className="flex items-center space-x-3 mb-3">
+                    <div className="flex items-center space-x-3">
                         <CheckCircle className="w-5 h-5 text-green-400" />
                         <p className="text-green-100 font-medium">Resume generated successfully!</p>
                     </div>
@@ -114,7 +117,8 @@ export default function SocialForm() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-6">
+                {/* Rest of your form content remains the same */}
                 <div className="space-y-4">
                     <div className="relative group">
                         <Github className="absolute left-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 transition-transform duration-200 group-focus-within:-rotate-12" />

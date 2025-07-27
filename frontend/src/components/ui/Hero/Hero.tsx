@@ -1,4 +1,5 @@
 import SocialForm from "@/components/ui/Forms/SocialForm";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 export default function Hero() {
     return (
@@ -6,17 +7,42 @@ export default function Hero() {
             <div className="max-w-6xl mx-auto text-center">
                 <div className="mb-8">
                     <h1 className="text-4xl md:text-7xl font-bold mb-6">
-                        <span className="bg-gradient-to-r from-mirage-100 to-mirage-200 bg-clip-text text-transparent">
+                        <FadeIn
+                            as="span"
+                            direction="up"
+                            distance={32}
+                            duration={0.5}
+                            delay={0.1}
+                            className="inline-block bg-gradient-to-r from-mirage-100 to-mirage-200 bg-clip-text text-transparent"
+                        >
                             Build a polished resume
-                        </span>
+                        </FadeIn>
+
                         <br />
-                        <span className="bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+
+                        <FadeIn
+                            as="span"
+                            direction="up"
+                            distance={32}
+                            duration={0.5}
+                            delay={0.3}
+                            className="inline-block bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent"
+                        >
                             instantly from your GitHub
-                        </span>
+                        </FadeIn>
                     </h1>
-                    <p className="text-lg md:text-xl text-mirage-300 mb-12 max-w-4xl mx-auto">
+
+                    <FadeIn
+                        as="p"
+                        direction="up"
+                        distance={32}
+                        duration={0.5}
+                        delay={0.4}
+                        className="text-lg md:text-xl text-mirage-300 mb-12 max-w-4xl mx-auto"
+                    >
                         Perfect for no experience students, new grads, and self-taught devs.
-                    </p>
+
+                    </FadeIn>
 
                     <SocialForm />
                 </div>
