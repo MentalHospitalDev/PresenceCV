@@ -8,26 +8,23 @@ from services.leetcode_scraper import LeetCodeScraper
 from services.boot_dev import BootDevScraper
 from models.resume import ProfileRequest
 from datetime import datetime
-import os
-import uuid
+from cachetools import TTLCache
 
 router = APIRouter()
 
-rate_limit = 30  # second btw
+rate_limit = 30  # seconds btw
 
-last_request_times : dict[str, datetime] = {}
-        
+last_request_times = TTLCache(maxsize=10000, ttl=rate_limit) # i used to have this as dict, but now this is much better
+
 @router.post("/generate")
-async def generate_resume(profile: ProfileRequest, request : Request):
-    if request.client :
+async def generate_resume(profile: ProfileRequest, request: Request):
+    if request.client:
         client_ip = request.client.host
-        current_time = datetime.now()
-        
         if client_ip in last_request_times:
-            last_time = last_request_times[client_ip]
-            if (current_time - last_time).total_seconds() < rate_limit:
-                raise HTTPException(status_code=429, detail=f"Rate limit exceeded. Please wait {(current_time - last_time).total_seconds()} before making another request.")
-
+            raise HTTPException(
+                status_code=429,
+                detail=f"Rate limit exceeded. Please wait {rate_limit} seconds before making another request."
+            )
 
     try:
         github_profile = None

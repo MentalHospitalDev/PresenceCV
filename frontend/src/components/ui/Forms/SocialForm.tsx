@@ -52,10 +52,6 @@ export default function SocialForm() {
     const { isLoading, error, success, generateResume, resetState } = useResumeGen();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (error || success) {
-            resetState();
-        }
-
         const { name, value } = e.target;
 
         if (name.startsWith("personal.")) {
@@ -72,6 +68,12 @@ export default function SocialForm() {
                 ...prev,
                 [name]: value,
             }));
+        }
+    };
+
+    const handleFormFocus = () => {
+        if (error || success) {
+            resetState();
         }
     };
 
@@ -96,13 +98,7 @@ export default function SocialForm() {
     };
 
     return (
-        <FadeIn
-            as="div"
-            direction="up"
-            distance={40}
-            duration={0.5}
-            delay={0.5}
-            className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
+        <div className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
             <h2 className="text-2xl font-bold mb-6 text-white">Enter Your Social Profiles</h2>
 
             {success && (
@@ -121,7 +117,8 @@ export default function SocialForm() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-6">
+                {/* Rest of your form content remains the same */}
                 <div className="space-y-4">
                     <div className="relative group">
                         <Github className="absolute left-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 transition-transform duration-200 group-focus-within:-rotate-12" />
@@ -312,6 +309,6 @@ export default function SocialForm() {
                     </span>
                 </button>
             </form>
-        </FadeIn>
+        </div>
     );
 }
