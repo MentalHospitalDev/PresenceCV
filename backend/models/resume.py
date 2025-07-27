@@ -1,6 +1,8 @@
 ﻿from pydantic import BaseModel
+from typing import Optional
 
 
 class ProfileRequest(BaseModel):
-    github_url: str | None
-    twitter_url: str | None
+    github_user: Optional[str] = None
+    leetcode_user: Optional[str] = None
+    bootdev_user: Optional[str] = None
