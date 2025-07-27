@@ -1,3 +1,6 @@
+import os
+import uuid
+from datetime import datetime
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -229,6 +232,13 @@ def markdown_to_docx(markdown_content: str) -> str:
         
         i += 1
 
-    path = "generated_resume.docx"
+    output_dir = "output"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    uid = str(uuid.uuid4())[:8]
+    filename = f"resume_{timestamp}_{uid}.docx"
+    
+    path = os.path.join(output_dir, filename)
     doc.save(path)
     return path
