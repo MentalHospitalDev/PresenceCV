@@ -35,7 +35,7 @@ async def generate_resume(profile: ProfileRequest):
             except Exception as e:
                 print(f"Error: {e}")
         
-        #rape leetcode data
+        #scrape leetcode data
         if profile.leetcode_user:
             leetcode_scraper = LeetCodeScraper(profile.leetcode_user)
             try:
@@ -71,53 +71,16 @@ async def generate_resume(profile: ProfileRequest):
         #convert to docx, save file
         docx_buffer, docx_filename = markdown_to_docx(markdown_content)
         
-        # global current_resume_data
-        # current_resume_data = {
-        #     "resume_json": resume_json,
-        #     "markdown": markdown_content,
-        #     "docx_filename": docx_filename
-        # }
-        # return {
-        #     "status": "success",
-        #     "message": "Resume generated successfully",
-        #     "docx_filename": docx_filename
-        # }
-        
-        resume_id = str(uuid.uuid4())
-        resume_store[resume_id] = {
-         "resume_json": resume_json,
-         "markdown": markdown_content,
-         "docx_buffer": docx_buffer,
-         "filename" : docx_filename,
-         "created_at": datetime.now()
-        }
-        return{
-            "status" : "success",
-            "message" : "Resume generated successfully",
-            "docx_filename" : docx_filename,
-            "resume_id" : resume_id
-        }
+        # Instead of saving buffer in memory, return it directly as a response
+        docx_buffer.seek(0)
+        return StreamingResponse(
+            io.BytesIO(docx_buffer.read()),
+            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            headers={"Content-Disposition": f"attachment; filename={docx_filename}"}
+        )
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/download_resume/{resume_id}")
-def download_resume(resume_id: str):
-    if resume_id not in resume_store:
-        raise HTTPException(status_code=404, detail="Resume not found")
-    
-    buffer = resume_store[resume_id]["docx_buffer"]
-    filename = resume_store[resume_id]["filename"]
-    
-    buffer.seek(0)
-    
-    return StreamingResponse(
-        io.BytesIO(buffer.read()),
-        media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
-    )
-    
 
 def cleanup():
     if len(resume_store) > MAX_RESUMES:
