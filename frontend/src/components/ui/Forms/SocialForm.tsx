@@ -14,6 +14,7 @@ import {
     MapPin,
     Linkedin,
     Globe,
+    FileText,
 } from "lucide-react";
 import Image from "next/image";
 import { useResumeGen } from "@/hooks/useResumeGen";
@@ -71,6 +72,14 @@ export default function SocialForm() {
         }
     };
 
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
     const handleFormFocus = () => {
         if (error || success) {
             resetState();
@@ -118,7 +127,6 @@ export default function SocialForm() {
             )}
 
             <form onSubmit={handleSubmit} onFocus={handleFormFocus} className="space-y-6">
-                {/* Rest of your form content remains the same */}
                 <div className="space-y-4">
                     <div className="relative group">
                         <Github className="absolute left-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 transition-transform duration-200 group-focus-within:-rotate-12" />
@@ -160,6 +168,20 @@ export default function SocialForm() {
                             placeholder="Boot.dev username or URL (optional)"
                             className="w-full pl-12 pr-4 py-4 bg-mirage-800/50 border border-mirage-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-mirage-400 transition-all"
                         />
+                    </div>
+
+                    <div className="relative group">
+                        <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 transition-transform duration-200 group-focus-within:-rotate-12" />
+                        <select
+                            name="format"
+                            value={formData.format}
+                            onChange={handleSelectChange}
+                            className="w-full pl-12 pr-4 py-4 bg-mirage-800/50 border border-mirage-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all appearance-none cursor-pointer"
+                        >
+                            <option value="pdf" className="bg-mirage-800 text-white">PDF Format</option>
+                            <option value="docx" className="bg-mirage-800 text-white">DOCX Format</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 pointer-events-none" />
                     </div>
                 </div>
 
