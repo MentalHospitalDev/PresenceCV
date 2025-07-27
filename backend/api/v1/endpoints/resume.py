@@ -60,8 +60,9 @@ async def generate_resume(profile: ProfileRequest):
             leetcode_profile=leetcode_profile
         )
         
-        #generate resume
-        resume_json = resume_generator(scraped_data)
+        #generate resume 
+        #toggle datascrap summarizer here
+        resume_json = resume_generator(scraped_data, use_summarizer=False)
         
         #convert to markdown
         markdown_content = json_to_markdown(resume_json)
