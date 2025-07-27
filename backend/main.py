@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from api.v1.api import api_router
 from core.config import Config
 
