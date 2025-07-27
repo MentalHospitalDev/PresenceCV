@@ -5,8 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "beautifulsoup4>=4.13.4",
     "fastapi[standard]>=0.116.1",
-    "google-genai>=1.27.0",
+    "instructor>=1.10.0",
+    "litellm>=1.74.8",
     "markdown>=3.8.2",
     "python-docx>=1.2.0",
     "python-dotenv>=1.1.1",
