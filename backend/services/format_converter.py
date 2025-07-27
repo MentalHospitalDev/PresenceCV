@@ -1,6 +1,6 @@
-import os
 import uuid
 from datetime import datetime
+from io import BytesIO
 from docx import Document
 from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -173,7 +173,8 @@ def json_to_markdown(resume_data: dict) -> str:
     return "\n".join(md_content)
 
 
-def markdown_to_docx(markdown_content: str) -> str:
+def markdown_to_docx(markdown_content: str) -> tuple[BytesIO, str]:
+    """Convert markdown to DOCX and return as BytesIO buffer with filename"""
 
     doc = Document()
     lines = markdown_content.split("\n")
@@ -231,14 +232,13 @@ def markdown_to_docx(markdown_content: str) -> str:
                 doc.add_paragraph(line)
         
         i += 1
-
-    output_dir = "output"
-    os.makedirs(output_dir, exist_ok=True)
-    
+        
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     uid = str(uuid.uuid4())[:8]
     filename = f"resume_{timestamp}_{uid}.docx"
     
-    path = os.path.join(output_dir, filename)
-    doc.save(path)
-    return path
+    buffer = BytesIO()
+    doc.save(buffer)
+    buffer.seek(0)
+    
+    return buffer, filename
