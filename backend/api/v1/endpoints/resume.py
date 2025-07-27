@@ -1,5 +1,5 @@
 import io
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from services.format_converter import markdown_to_docx, json_to_markdown
 from services.resume_generator import resume_generator, ScrapedData
@@ -13,9 +13,22 @@ import uuid
 
 router = APIRouter()
 
+rate_limit = 30  # second btw
+
+last_request_times : dict[str, datetime] = {}
         
 @router.post("/generate")
-async def generate_resume(profile: ProfileRequest):
+async def generate_resume(profile: ProfileRequest, request : Request):
+    if request.client :
+        client_ip = request.client.host
+        current_time = datetime.now()
+        
+        if client_ip in last_request_times:
+            last_time = last_request_times[client_ip]
+            if (current_time - last_time).total_seconds() < rate_limit:
+                raise HTTPException(status_code=429, detail=f"Rate limit exceeded. Please wait {(current_time - last_time).total_seconds()} before making another request.")
+
+
     try:
         github_profile = None
         github_repo = None
@@ -71,6 +84,7 @@ async def generate_resume(profile: ProfileRequest):
         
         # Instead of saving buffer in memory, return it directly as a response
         docx_buffer.seek(0)
+        last_request_times[client_ip] = datetime.now()
         return StreamingResponse(
             io.BytesIO(docx_buffer.read()),
             media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
