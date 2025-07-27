@@ -19,6 +19,7 @@ import Image from "next/image";
 import { useResumeGen } from "@/hooks/useResumeGen";
 import { SocialProfiles, PersonalProfile } from "@/types/user";
 import { TwitterX } from "@/components/icons/icons";
+import { FadeIn } from "@/components/ui/FadeIn";
 
 interface FormData {
     github: string;
@@ -95,12 +96,18 @@ export default function SocialForm() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
+        <FadeIn
+            as="div"
+            direction="up"
+            distance={40}
+            duration={0.5}
+            delay={0.5}
+            className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
             <h2 className="text-2xl font-bold mb-6 text-white">Enter Your Social Profiles</h2>
 
             {success && (
                 <div className="mb-6 p-4 bg-green-900/30 border border-green-700/50 rounded-xl">
-                    <div className="flex items-center space-x-3 mb-3">
+                    <div className="flex items-center space-x-3">
                         <CheckCircle className="w-5 h-5 text-green-400" />
                         <p className="text-green-100 font-medium">Resume generated successfully!</p>
                     </div>
@@ -305,6 +312,6 @@ export default function SocialForm() {
                     </span>
                 </button>
             </form>
-        </div>
+        </FadeIn>
     );
 }
