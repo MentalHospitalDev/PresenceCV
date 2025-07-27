@@ -39,22 +39,28 @@ class ApiService {
         }
     }
 
-    async generateResume(data: ResumeGenReq): Promise<ResumeGenRsp> {
-        console.log("TEST: Genreating resume with data:", data);
-        return this.request<ResumeGenRsp>("/generate", {
+    async generateResume(data: ResumeGenReq): Promise<{ blob: Blob; filename: string }> {
+        console.log("TEST: Generating resume with data:", data);
+        const response = await fetch(`${API_BASE_URL}/generate`, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify(data),
         });
-    }
-
-    async downloadResume(resumeId: string): Promise<Blob> {
-        const response = await fetch(`${API_BASE_URL}/download_resume/${resumeId}`);
 
         if (!response.ok) {
-            throw new ApiError("Failed to download resume", "DOWNLOAD_ERROR", response.status);
+            let errorMessage = "Something went wrong";
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.detail || errorData.message || errorMessage;
+            } catch {
+                errorMessage = "Failed to parse error response";
+            }
+            throw new ApiError(errorMessage, "API_ERROR", response.status);
         }
 
-        return await response.blob();
+        return {blob : await response.blob(), filename: "generated_resume.docx"};
     }
 }
 

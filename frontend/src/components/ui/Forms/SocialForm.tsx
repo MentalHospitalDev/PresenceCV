@@ -17,7 +17,7 @@ export default function SocialForm() {
         bootdev: "",
     });
 
-    const { isLoading, isDownloading, error, success, resumeData, generateResume, downloadResume, resetState } =
+    const { isLoading, error, success, generateResume, resetState } =
         useResumeGen();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,38 +43,16 @@ export default function SocialForm() {
 
         await generateResume(profiles);
     };
-
-    const handleDownload = async () => {
-        await downloadResume();
-    };
-
     return (
         <div className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
             <h2 className="text-2xl font-bold mb-6 text-white">Enter Your Social Profiles</h2>
 
-            {success && resumeData && (
+            {success  && (
                 <div className="mb-6 p-4 bg-green-900/30 border border-green-700/50 rounded-xl">
                     <div className="flex items-center space-x-3 mb-3">
                         <CheckCircle className="w-5 h-5 text-green-400" />
                         <p className="text-green-100 font-medium">Resume generated successfully!</p>
                     </div>
-                    <button
-                        onClick={handleDownload}
-                        disabled={isDownloading}
-                        className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isDownloading ? (
-                            <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                <span>Downloading...</span>
-                            </>
-                        ) : (
-                            <>
-                                <Download className="w-4 h-4" />
-                                <span>Download Resume</span>
-                            </>
-                        )}
-                    </button>
                 </div>
             )}
 
