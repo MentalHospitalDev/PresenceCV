@@ -136,7 +136,7 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
 
 def with_data_summarizer() -> str:
     return """expert resume writer. create professional resume from summarized data.
-    JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[]}
+    JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
     guidelines:
     - professional summary highlighting key strengths using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
     - transform projects into impressive descriptions
@@ -149,7 +149,7 @@ def with_data_summarizer() -> str:
 
 def without_data_summarizer() -> str:
     return """expert resume writer. create professional resume from GitHub, LeetCode, Boot.dev data.
-    Required JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[]}
+    Required JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
     Extract:
     - professional summary highlighting skills/experience using STAR (Situation, Task, Action, Result) or CAR (Challenge, Action, Result) methodology
     - gitHub projects with meaningful descriptions
