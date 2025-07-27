@@ -6,15 +6,15 @@ from services.github_scraper import GithubScraper
 from services.leetcode_scraper import LeetCodeScraper
 from services.boot_dev import BootDevScraper
 from models.resume import ProfileRequest
+from datetime import datetime, timedelta
 import os
+import uuid
 
 router = APIRouter()
 
-# Global variable to store the latest generated resume (in production, use database or session)
-current_resume_data = None
-
-router = APIRouter()
-
+resume_store = {}
+MAX_RESUMES = 50
+        
 @router.post("/generate")
 async def generate_resume(profile: ProfileRequest):
     try:
@@ -70,31 +70,46 @@ async def generate_resume(profile: ProfileRequest):
         #convert to docx, save file
         docx_filename = markdown_to_docx(markdown_content)
         
-        #store resume data globally for download endpoint
-        global current_resume_data
-        current_resume_data = {
-            "resume_json": resume_json,
-            "markdown": markdown_content,
-            "docx_filename": docx_filename
+        # global current_resume_data
+        # current_resume_data = {
+        #     "resume_json": resume_json,
+        #     "markdown": markdown_content,
+        #     "docx_filename": docx_filename
+        # }
+        # return {
+        #     "status": "success",
+        #     "message": "Resume generated successfully",
+        #     "docx_filename": docx_filename
+        # }
+        
+        resume_id = str(uuid.uuid4())
+        resume_store[resume_id] = {
+         "resume_json": resume_json,
+         "markdown": markdown_content,
+         "docx_filename": docx_filename,
+         "created_at": datetime.now()
         }
-        return {
-            "status": "success",
-            "message": "Resume generated successfully",
-            "docx_filename": docx_filename
+        return{
+            "status" : "success",
+            "message" : "Resume generated successfully",
+            "docx_filename" : docx_filename,
+            "resume_id" : resume_id
         }
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/download_resume")
-def download_resume():
+@router.get("/download_resume/{resume_id}")
+def download_resume(resume_id: str):
     try:
-        if not current_resume_data:
+        if resume_id not in resume_store:
             raise HTTPException(status_code=404, detail="No resume available.")
         
-        docx_path = current_resume_data["docx_filename"]
+        docx_path = resume_store[resume_id]["docx_filename"]
         
         if not os.path.exists(docx_path):
+            del resume_store[resume_id]
             raise HTTPException(status_code=404, detail="Resume file not found")
         
         return FileResponse(
@@ -104,3 +119,14 @@ def download_resume():
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+def cleanup():
+    if len(resume_store) > MAX_RESUMES:
+        oldest = sorted(resume_store.items(), key=lambda x: x[1]["created_at"])
+        for resume_id, data in oldest:
+            try:
+                os.remove(data["docx_filename"])
+                del resume_store[resume_id]
+            except:
+                pass
