@@ -1,7 +1,7 @@
 import io
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-from services.format_converter import markdown_to_docx, json_to_markdown
+from services.format_converter import markdown_to_docx, markdown_to_pdf, json_to_markdown
 from services.resume_generator import resume_generator, ScrapedData
 from services.github_scraper import GithubScraper
 from services.leetcode_scraper import LeetCodeScraper
@@ -79,16 +79,19 @@ async def generate_resume(profile: ProfileRequest, request : Request):
         #convert to markdown
         markdown_content = json_to_markdown(resume_json)
         
-        #convert to docx, save file
-        docx_buffer, docx_filename = markdown_to_docx(markdown_content)
+        if profile.format == "pdf":
+            file_buffer, filename = markdown_to_pdf(markdown_content)
+            media_type = 'application/pdf'
+        else:  
+            file_buffer, filename = markdown_to_docx(markdown_content)
+            media_type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         
-        # Instead of saving buffer in memory, return it directly as a response
-        docx_buffer.seek(0)
+        file_buffer.seek(0)
         last_request_times[client_ip] = datetime.now()
         return StreamingResponse(
-            io.BytesIO(docx_buffer.read()),
-            media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            headers={"Content-Disposition": f"attachment; filename={docx_filename}"}
+            io.BytesIO(file_buffer.read()),
+            media_type=media_type,
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
         
     except Exception as e:
