@@ -1,16 +1,17 @@
 # PresenceCV
 
 <p align="center">
-  <img src="https://i.ibb.co/qFhycrB9/image.png" />
+  <img src="https://i.ibb.co/qFhycrB9/image.png" width="400" />
 </p>
 
 ## Boot.dev 2025 Hackathon Entry
 
 This project was created for the Boot.dev 2025 Hackathon.
 
-## LIVE PREVIEW
-
-[View Live Application](https://presence-cv.vercel.app/)
+<p align="center">
+  <strong>LIVE PREVIEW</strong><br>
+  <a href="https://presence-cv.vercel.app/">View Live Application</a>
+</p>
 
 A full-stack application that automatically generates professional resumes for you by scraping data from your Github, LeetCode, and Boot.dev profiles. This app uses AI to format and present your coding achievements, projects
 and skills in a polished resume format.
@@ -24,6 +25,20 @@ PresenceCV aggregates your programming accomplishments from multiple platforms:
 - **Boot.dev**: Collects course completions and learning progress
 
 The scraped data is then processed using AI to generate a professional formatted resume that highlights your technical skills, projects, and coding experience. Resumes are generated in both Word document format (.docx) and PDF format.
+
+## How It Works
+
+The PresenceCV workflow as follows:
+
+1. **Data Collection**: Enter your usernames for GitHub, LeetCode, and Boot.dev platforms
+2. **Profile Scraping**: The backend automatically scrapes your public profiles and repositories
+3. **Data Analysis**: AI analyzes your coding activity, evaluates project complexity, and identifies key skills demonstrated
+4. **Content Generation**: AI model create professional descriptions about your projects and experience
+5. **Resume Formatting**: The system formats everything into a polished resume with styling and structure
+6. **Export Options**: Download your resume in either PDF or DOCX format for immediate use
+
+The entire process takes just a few seconds, transforming your online presence into a resume that you can showcase and show the world.
+
 
 ## Tech Stack
 
