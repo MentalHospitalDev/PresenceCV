@@ -1,12 +1,13 @@
+import httpx
+
 from models.bootdev import BootDevProfile, Course
-import httpx 
 
 
 class BootDevScraper:
     def __init__(self, username: str):
         self.username = username
         self.profile = BootDevProfile(username=username)
-    
+
     async def fetch_profile(self) -> BootDevProfile:
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -37,8 +38,5 @@ class BootDevScraper:
                 )
                 print(course)
                 self.profile.courses_done.append(course)
-            
+
             return self.profile
-        
-
-

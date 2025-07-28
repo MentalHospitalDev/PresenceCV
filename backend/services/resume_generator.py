@@ -1,16 +1,16 @@
 import json
-from litellm import completion
-from pydantic import BaseModel, ValidationError
-from dotenv import load_dotenv
+import time
 from typing import Optional, Union
 
-from uvicorn import Config
-from models.resume import Form
-from models.Github import GithubProfile, Repository
-from models.leetcode import LeetCodeProfile
-from models.bootdev import BootDevProfile
+from litellm import completion
+from pydantic import BaseModel, ValidationError
+
 from core.config import Settings
-import time
+from models.Github import GithubProfile, Repository
+from models.bootdev import BootDevProfile
+from models.leetcode import LeetCodeProfile
+from models.resume import Form
+
 
 class PersonalInfo(BaseModel):
     name: str = ""
@@ -22,21 +22,25 @@ class PersonalInfo(BaseModel):
     twitter: str = ""
     website: str = ""
 
+
 class Experience(BaseModel):
     title: str = ""
     company: str = ""
     duration: str = ""
     description: str = ""
 
+
 class Project(BaseModel):
     name: str = ""
     description: str = ""
     technologies_used: list[str] = []
 
+
 class Education(BaseModel):
     degree: str = ""
     institution: str = ""
     year: str = ""
+
 
 class Resume(BaseModel):
     personal_info: PersonalInfo
@@ -47,12 +51,14 @@ class Resume(BaseModel):
     education: list[Education] = []
     achievements: list[str] = []
 
+
 class ScrapedData(BaseModel):
     github_profile: Optional[GithubProfile] = None
     github_repositories: Optional[list[Repository]] = None
     leetcode_profile: Optional[LeetCodeProfile] = None
     bootdev_profile: Optional[BootDevProfile] = None
     personal_info: Optional[Form] = None
+
 
 class SummarizedData(BaseModel):
     personal_info: dict = {}
@@ -63,10 +69,11 @@ class SummarizedData(BaseModel):
     professional_experience_indicators: list[str] = []
     education_background: list[str] = []
 
+
 def data_summarizer(scraped_data: ScrapedData):
     system_instruction = data_summarizer_sys_prompt()
     scraped_data_dict = scraped_data.model_dump(exclude_none=True)
-    
+
     user_content = f"""
     summarize the following scraped data for resume creation:
     {json.dumps(scraped_data_dict, indent=2)}
@@ -83,16 +90,17 @@ def data_summarizer(scraped_data: ScrapedData):
             ],
             response_format={"type": "json_object"}
         )
-        
-        #parse json
+
+        # parse json
         summary_json = json.loads(response.choices[0].message.content)
-        #validate
+        # validate
         summarized_data = SummarizedData(**summary_json)
         return summarized_data
-    
+
     except Exception as e:
         print(f"Error summarizing data: {e}")
         return None
+
 
 def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: Optional[bool] = False):
     if isinstance(data, ScrapedData):
@@ -106,7 +114,7 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
     else:
         input_data = data.model_dump()
         system_instruction = with_data_summarizer()
-    
+
     user_content = f"""
     Create a professional resume using this data:
     {json.dumps(input_data, indent=2)}
@@ -131,14 +139,14 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
                 resume_model = Resume(**resume_json)
                 return resume_model.model_dump()
             except ValidationError as ve:
-                print(f"Validation error on attempt {attempt+1}: {ve}")
+                print(f"Validation error on attempt {attempt + 1}: {ve}")
                 if attempt < MAX_RETRIES - 1:
                     print("Retrying resume generation...")
                     error_message = f"ValidationError: {ve.errors()}"
                     retry_user_content = (
-                        user_content +
-                        f"\n\nThe previous response could not be parsed due to the following validation errors:\n{error_message}\n"
-                        "Please fix these issues and return valid JSON matching the required schema."
+                            user_content +
+                            f"\n\nThe previous response could not be parsed due to the following validation errors:\n{error_message}\n"
+                            "Please fix these issues and return valid JSON matching the required schema."
                     )
                     time.sleep(RETRY_DELAY)
                     response = completion(
@@ -157,6 +165,7 @@ def resume_generator(data: Union[ScrapedData, SummarizedData], use_summarizer: O
         print(f"Error generating resume: {e}")
         return None
 
+
 def with_data_summarizer() -> str:
     return """you are an expert resume writer with the experts in creating cool af resumes
     JSON structure: {"personal_info":{"name":"","email":"","phone":"","location":"","linkedin":"","github":"","twitter":"","website":""},"summary":"","skills":[],"experience":[{"title":"","company":"","duration":"","description":""}],"projects":[{"name":"","description":"","technologies_used":["tech1","tech2"]}],"education":[{"degree":"","institution":"","year":""}],"achievements":[""]}
@@ -170,6 +179,7 @@ def with_data_summarizer() -> str:
     - Analyze README files in repositories for additional personal info, education details, work experience, and project descriptions
 
     return valid JSON only, no markdown."""
+
 
 def without_data_summarizer() -> str:
     return """You are a professional AI resume writer. Based on the provided scraped user data from GitHub, boot.dev, and leetcode, create a cool af resume.
@@ -190,7 +200,8 @@ def without_data_summarizer() -> str:
     - Analyze README files in repositories for additional personal info, education details, work experience, and project descriptions
 
     return valid JSON only, no markdown."""
-    
+
+
 def data_summarizer_sys_prompt() -> str:
     return """you are an expert data analyst in extracting and summarizing information.
 
@@ -214,4 +225,3 @@ def data_summarizer_sys_prompt() -> str:
     - focus on career-relevant information
 
     Return valid JSON only."""
-

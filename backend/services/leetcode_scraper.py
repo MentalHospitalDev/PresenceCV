@@ -1,5 +1,6 @@
-from models.leetcode import LeetCodeProfile
 import httpx
+
+from models.leetcode import LeetCodeProfile
 
 
 class LeetCodeScraper:
@@ -7,7 +8,7 @@ class LeetCodeScraper:
         self.username = username
         self.profile = None
 
-    async def fetch_profile(self) :
+    async def fetch_profile(self):
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 "https://leetcode.com/graphql/",
@@ -59,7 +60,7 @@ class LeetCodeScraper:
                     "operationName": "mergedUserInfo"
                 }
             )
-            
+
             response.raise_for_status()
             data = response.json().get("data", {}).get("matchedUser", None)
             if not data:
@@ -72,16 +73,16 @@ class LeetCodeScraper:
                 skills=[tag["tagName"] for diff in data["tagProblemCounts"] for tag in data["tagProblemCounts"][diff]],
                 bio=data["profile"].get("aboutMe", ""),
                 problem_diff_counts={
-                    "easy": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if item["difficulty"] == "Easy"),
-                    "intermediate": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if item["difficulty"] == "Medium"),
-                    "hard": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if item["difficulty"] == "Hard"),
+                    "easy": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if
+                                item["difficulty"] == "Easy"),
+                    "intermediate": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if
+                                        item["difficulty"] == "Medium"),
+                    "hard": sum(item["count"] for item in data["submitStats"]["acSubmissionNum"] if
+                                item["difficulty"] == "Hard"),
                 },
                 solved_problems_count=sum(item["count"] for item in data["submitStats"]["acSubmissionNum"]),
-                most_common_languages=[lang["languageName"] for lang in data["languageProblemCount"]][:3]  # Top 3 languages
+                most_common_languages=[lang["languageName"] for lang in data["languageProblemCount"]][:3]
+                # Top 3 languages
             )
             print(self.profile)
             return self.profile
-            
-
-
-

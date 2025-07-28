@@ -1,6 +1,8 @@
-﻿from typing_extensions import Literal
+﻿from typing import Optional
+
 from pydantic import BaseModel
-from typing import Optional
+from typing_extensions import Literal
+
 
 class Form(BaseModel):
     first_name: Optional[str] = None
@@ -13,10 +15,11 @@ class Form(BaseModel):
     twitter: Optional[str] = None
     website: Optional[str] = None
 
+
 class ProfileRequest(BaseModel):
     github_user: Optional[str] = None
     leetcode_user: Optional[str] = None
     bootdev_user: Optional[str] = None
     summarize: Optional[bool] = False
     personal: Optional[Form] = None
-    format : Optional[Literal["docx", "pdf"]] = "docx"
+    format: Optional[Literal["docx", "pdf"]] = "docx"
