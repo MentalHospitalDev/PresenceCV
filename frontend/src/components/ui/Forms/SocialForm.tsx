@@ -46,7 +46,7 @@ export default function SocialForm() {
             twitter: "",
             website: "",
         },
-        format: "pdf",
+        format: "docx",
     });
 
     const [isPersonalExpanded, setIsPersonalExpanded] = useState(false);
