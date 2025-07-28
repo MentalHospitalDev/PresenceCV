@@ -17,7 +17,6 @@ class Config(BaseSettings):
 
 
 def Settings() -> Config:
-    """Returns the settings instance."""
     if not hasattr(Settings, "_instance"):
         Settings._instance = Config()
     return Settings._instance

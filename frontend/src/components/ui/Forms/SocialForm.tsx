@@ -178,8 +178,12 @@ export default function SocialForm() {
                             onChange={handleSelectChange}
                             className="w-full pl-12 pr-4 py-4 bg-mirage-800/50 border border-mirage-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all appearance-none cursor-pointer"
                         >
-                            <option value="pdf" className="bg-mirage-800 text-white">PDF Format</option>
-                            <option value="docx" className="bg-mirage-800 text-white">DOCX Format</option>
+                            <option value="docx" className="bg-mirage-800 text-white">
+                                DOCX Format
+                            </option>
+                            <option value="pdf" className="bg-mirage-800 text-white">
+                                PDF Format
+                            </option>
                         </select>
                         <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-mirage-400 w-5 h-5 pointer-events-none" />
                     </div>
