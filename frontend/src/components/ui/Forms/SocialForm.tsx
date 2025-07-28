@@ -107,7 +107,7 @@ export default function SocialForm() {
     };
 
     return (
-        <div className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/20 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
+        <div className="max-w-2xl mx-auto bg-mirage-900/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-mirage-700/70 shadow-2xl shadow-mirage-600/40 ring-1 ring-mirage-600/30 ring-offset-2 ring-offset-transparent">
             <h2 className="text-2xl font-bold mb-6 text-white">Enter Your Social Profiles</h2>
 
             {success && (

@@ -31,7 +31,7 @@ export default function CTA() {
                             direction="up"
                             distance={24}
                             duration={0.5}
-                            delay={0.5}
+                            delay={0.6}
                             className="font-light text-lg text-gray-400"
                         >
                             Let&#39;s face it
